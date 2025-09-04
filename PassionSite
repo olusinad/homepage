@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Passion Website</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1>Dara Olusina</h1>
+        <img src="">
+        <p> One of my passions is photography and specifically landscape photography.
+            I have a website that I created in high school that was dedicated to my photography. <a href="https://oiophoto.weebly.com/">Take a look!</a>
+        </p>
+
+    </body>
+    <footer style="font-size: 10px">
+        Author: Dara Olusina <br>
+        Thanks for coming to my Ted Talk about me &#128077 &#128540 &#128077
+    </footer>
+</html>
