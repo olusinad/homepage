@@ -1,1 +1,35 @@
+div{
+    display: flex;
+    justify-content: center;
+}
 
+body{
+    background-color: black;
+}
+
+@font-face{
+    font-family: myFirstFont;
+    src: url(Neon.ttf);
+  }
+  
+  div{
+    font-family: myFirstFont
+  }
+  
+  h{
+    font-size: x-large;
+  }
+
+  p{
+    color:azure
+  }
+
+  img1{
+    filter: drop-shadow(10px 10px 10px 10px);
+    width: 50%;
+    
+  }
+.mask1{
+    -webkit-mask-image: linear-gradient(black, transparent);
+    mask-image: linear-gradient(black, transparent);
+}
