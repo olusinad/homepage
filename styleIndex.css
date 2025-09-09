@@ -1,7 +1,44 @@
-*{
-    background-color: rgb(223, 193, 154);
+body{
+    background-color: powderblue;
 }
 
+@font-face{
+    font-family: myFirstFont;
+    src: url(AdobeClean-SemiCnIt.otf);
+  }
+
+div{
+    font-family: myFirstFont
+}
 h1{
-    font-size: 200%;
+    font-size: 400%;
+    text-align: center;
+    font-family: myFirstFont;
+}
+h2{
+    font-size:150%;
+    text-align: center;
+    font-family: myFirstFont;
+}
+p{
+    font-family: myFirstFont;
+    font-size:150%;
+    text-align: center;
+}
+
+a:link {
+    color: green;
+}
+
+a:visited {
+    color: darkgreen;
+}
+
+a:hover {
+    color: red;
+    text-decoration: underline;
+}
+
+a:active {
+    color: orange;
 }
