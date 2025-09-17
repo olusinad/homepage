@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Passion Website</title>
-        <link rel="stylesheet" href="style.css">
-        <link rel="icon" type="image/x-icon" href="favicon.png">
-    </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Passion Website</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/x-icon" href="favicon.png" />
+</head>
     <body>
         <a href="index.html"><img src="/Users/darao/Desktop/first website/homepage/passion_Site/home.jpg"></a>
         <h1 class="drop-down">Passion</h1>
@@ -16,15 +18,55 @@
             So, enjoy looking through some pictures and reading the behind the scenes of them!
         </p>
         <div class="image-row">
-        <img src="SnowDay.jpeg">
-        <img src="creek.jpeg">
-        <img src="deckset.jpeg">
-        <img src="rockbridge.jpeg">
+            <img src="SnowDay.jpeg" alt="Snow Day" class="lightbox-img">
+            <img src="creek.jpeg" alt="Creek" class="lightbox-img">
+            <img src="deckset.jpeg" alt="Deck Set" class="lightbox-img">
+            <img src="rockbridge.jpeg" alt="Rock Bridge" class="lightbox-img">
+            <img src="bellisle.jpeg" alt="Bell Isle" class="lightbox-img">
+            <img src="bow.jpeg" alt="Bow" class="lightbox-img">
+            <img src="castle.jpeg" alt="Castle" class="lightbox-img">
+            <img src="lanterns.jpeg" alt="Lanterns" class="lightbox-img">
+            <img src="leaves.jpeg" alt="Leaves" class="lightbox-img">
+            <img src="palmtree.jpeg" alt="Palm Tree" class="lightbox-img">
+            <img src="tower.jpeg" alt="Tower" class="lightbox-img">
+            <img src="vira.jpeg" alt="Vira" class="lightbox-img">
+        </div>
+        <div id="lightbox" class="lightbox-img">
+            <span class="close">&times;</span>
+            <img class="lightbox-content" id="lightbox-img">
+            <div id="caption"></div>
         </div>
         <footer style="font-size: 10px">
             Author: Dara Olusina <br>
             Thanks for coming to my Ted Talk about me &#128077 &#128540 &#128077
         </footer>
+        <script>
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const captionText = document.getElementById('caption');
+  const closeBtn = document.querySelector('.close');
+  const images = document.querySelectorAll('.lightbox-img');
+
+  images.forEach(img => {
+    img.addEventListener('click', () => {
+      lightbox.style.display = 'block';
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+      captionText.textContent = img.alt;
+    });
+  });
+
+  closeBtn.addEventListener('click', () => {
+    lightbox.style.display = 'none';
+  });
+
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+      lightbox.style.display = 'none';
+    }
+  });
+</script>
+
     </body>
 
 </html>
