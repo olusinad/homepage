@@ -1,76 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Interactive Islands</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 40px;
-    line-height: 1.6;
-    transition: transform 0.3s ease;
-  }
-  .island {
-    background: #f0f8ff;
-    border: 1px solid #ccc;
-    padding: 20px;
-    margin-bottom: 20px;
-    cursor: pointer;
-    border-radius: 8px;
-    user-select: none;
-  }
-  .island:hover {
-    background: #e0f0ff;
-  }
-</style>
+  <link rel="stylesheet" href="structstyle.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interactive Islands</title>
 </head>
 <body>
+    <div id="page-wrapper">
+    <main>
 
-<div class="island" tabindex="0">No</div>
-<div class="island" tabindex="0">Man</div>
-<div class="island" tabindex="0">is</div>
-<div class="island" tabindex="0">an</div>
-<div class="island" tabindex="0">island</div>
-
-<div class="island" tabindex="0">Entire of itself;
-
-    Every man is a piece of the continent,
+  <div id="canvas" tabindex="0" aria-label="Interactive islands canvas">
     
-    A part of the main.</div>
+    <svg id="island-svg" width="300vw" height="100vh" style="position: relative; display: block;">
+      <defs>
+        <linearGradient id="islandGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#a8edea"/>
+          <stop offset="100%" stop-color="#fed6e3"/>
+        </linearGradient>
+        <clipPath id="clip1">
+          <rect rx="20" ry="20" width="160" height="100" />
+        </clipPath>
+        <clipPath id="clip2">
+          <rect rx="20" ry="20" width="160" height="100" />
+        </clipPath>
+      </defs>
+    
+    
+      <g class="island" tabindex="0" role="button" aria-label="Editable paragraph" data-text="No">
+        <rect rx="20" ry="20" width="140" height="60" />
+        <text x="70" y="35" text-anchor="middle" alignment-baseline="middle" class="island-text">No</text>
+      </g>
+      <g class="island" tabindex="0" role="button" aria-label="Editable paragraph" data-text="Man">
+        <rect rx="20" ry="20" width="140" height="60" />
+        <text x="70" y="35" text-anchor="middle" alignment-baseline="middle" class="island-text">Man</text>
+      </g>
+      <g class="island" tabindex="0" role="button" aria-label="Editable paragraph" data-text="is">
+        <rect rx="20" ry="20" width="140" height="60" />
+        <text x="70" y="35" text-anchor="middle" alignment-baseline="middle" class="island-text">is</text>
+      </g>
+      <g class="island" tabindex="0" role="button" aria-label="Editable paragraph" data-text="an">
+        <rect rx="20" ry="20" width="140" height="60" />
+        <text x="70" y="35" text-anchor="middle" alignment-baseline="middle" class="island-text">an</text>
+      </g>
+      <g class="island" tabindex="0" role="button" aria-label="Editable paragraph" data-text="island">
+        <rect rx="20" ry="20" width="140" height="60" />
+        <text x="70" y="35" text-anchor="middle" alignment-baseline="middle" class="island-text">island</text>
+      </g>
+      <g class="island" tabindex="0" role="button" aria-label="Editable paragraph" data-text="Entire of itself; Every man is a piece of the continent, A part of the main.">
+        <rect rx="20" ry="20" width="140" height="60" />
+        <text x="70" y="35" text-anchor="middle" class="island-text">
+          But I am
+        </text>
+      </g>
+      <g class="island" tabindex="0" role="button" aria-label="Editable paragraph" data-text="island">
+        <rect rx="20" ry="20" width="140" height="60" />
+        <text x="70" y="35" text-anchor="middle" alignment-baseline="middle" class="island-text">HEY</text>
+      </g>
+      <g class="island" tabindex="0" role="button" aria-label="Editable paragraph" data-text="island">
+        <rect rx="20" ry="20" width="140" height="60" />
+        <text x="70" y="35" text-anchor="middle" alignment-baseline="middle" class="island-text">change me</text>
+      </g>
+      <g class="island" tabindex="0" role="button" aria-label="Editable paragraph" data-text="island">
+        <rect rx="20" ry="20" width="140" height="60" />
+        <text x="70" y="35" text-anchor="middle" alignment-baseline="middle" class="island-text">press me</text>
+      </g>
+
+
+      <g class="island" tabindex="0" role="button" aria-label="Photo island" data-text="Photo Island 1">
+        <rect rx="20" ry="20" width="10" height="10" fill="transparent" />
+        <image 
+          href="bowlisland.jpg"
+          width="160" height="100" clip-path="url(#clip1)" />
+      </g>
+      <g class="island" tabindex="0" role="button" aria-label="Photo island" data-text="Photo Island 2">
+        <rect rx="20" ry="20" width="10" height="10" fill="transparent" />
+        <image 
+          href="bookisland.jpg" 
+          width="160" height="100" clip-path="url(#clip2)" />
+      </g>
+      <g class="island" tabindex="0" role="button" aria-label="Photo island" data-text="Photo Island 3">
+        <rect rx="20" ry="20" width="10" height="10" fill="transparent" />
+        <image 
+          href="tropical-island.jpg" 
+          width="160" height="100" clip-path="url(#clip2)" />
+      </g>
+      <g class="island" tabindex="0" role="button" aria-label="Photo island" data-text="Photo Island 4">
+        <rect rx="20" ry="20" width="10" height="10" fill="transparent" />
+        <image 
+          href="683.jpg" 
+          width="160" height="100" clip-path="url(#clip2)" />
+      </g>
+    </svg>
+  </div>
 
 <script>
+  const svg = document.getElementById('island-svg');
+  const islands = svg.querySelectorAll('.island');
+  const padding = 20;
+
+  function placeIslandsRandomly() {
+    const bodyWidth = window.innerWidth;
+    const bodyHeight = window.innerHeight;
+
+    islands.forEach(island => {
+     
+      let shape = island.querySelector('rect') || island.querySelector('image');
+      if (!shape) return;
+
+      const width = parseFloat(shape.getAttribute('width'));
+      const height = parseFloat(shape.getAttribute('height'));
+
+      const maxLeft = bodyWidth * 3 - width - padding;
+      const maxTop = bodyHeight - height - padding;
+
+      const left = Math.random() * maxLeft + padding;
+      const top = Math.random() * maxTop + padding;
+
+      island.setAttribute('transform', `translate(${left},${top})`);
+      island.dataset.x = left;
+      island.dataset.y = top;
+    });
+  }
+
+  window.addEventListener('load', placeIslandsRandomly);
+  window.addEventListener('resize', placeIslandsRandomly);
+
+  islands.forEach(island => {
+    island.addEventListener('click', () => {
+      const currentText = island.dataset.text;
+      const newText = prompt('Rewrite this paragraph:', currentText);
+      if (newText !== null) {
+        island.dataset.text = newText;
+        const textElem = island.querySelector('text');
+        if (!textElem) return; 
+        textElem.textContent = '';
+        newText.split('\n').forEach((line, i) => {
+          const tspan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+          tspan.setAttribute('x', textElem.getAttribute('x'));
+          tspan.setAttribute('dy', i === 0 ? '0' : '1.2em');
+          tspan.textContent = line;
+          textElem.appendChild(tspan);
+        });
+      }
+    });
+
+    island.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        island.click();
+      }
+    });
+  });
+
+  let selectedIsland = null;
+  let offsetX, offsetY;
+
+  svg.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.island')) {
+      selectedIsland = e.target.closest('.island');
+      const transform = selectedIsland.getAttribute('transform');
+      const translateMatch = /translate\(([-\d.]+),\s*([-\d.]+)\)/.exec(transform);
+      const startX = translateMatch ? parseFloat(translateMatch[1]) : 0;
+      const startY = translateMatch ? parseFloat(translateMatch[2]) : 0;
+      offsetX = e.clientX - startX;
+      offsetY = e.clientY - startY;
+      selectedIsland.style.cursor = 'grabbing';
+    }
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (selectedIsland) {
+      let newX = e.clientX - offsetX;
+      let newY = e.clientY - offsetY;
+
+      let shape = selectedIsland.querySelector('rect') || selectedIsland.querySelector('image');
+      if (!shape) return;
+
+      const width = parseFloat(shape.getAttribute('width'));
+      const height = parseFloat(shape.getAttribute('height'));
+      const maxX = window.innerWidth * 3 - width - padding;
+      const maxY = window.innerHeight - height - padding;
+
+      newX = Math.min(Math.max(padding, newX), maxX);
+      newY = Math.min(Math.max(padding, newY), maxY);
+
+      selectedIsland.setAttribute('transform', `translate(${newX},${newY})`);
+      selectedIsland.dataset.x = newX;
+      selectedIsland.dataset.y = newY;
+    }
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (selectedIsland) {
+      selectedIsland.style.cursor = 'pointer';
+      selectedIsland = null;
+    }
+  });
+
   let zoomLevel = 1;
+  let panX = 0;
+  let panY = 0;
+
+  function updateTransform() {
+    svg.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+  }
 
   window.addEventListener('keydown', (e) => {
     if (e.ctrlKey) {
-      if (e.key === '+') {
-        zoomLevel += 0.1;
-        document.body.style.transform = `scale(${zoomLevel})`;
+      if (e.key === '=' || e.key === '+') {
+        zoomLevel = Math.min(3, zoomLevel + 0.1);
+        updateTransform();
         e.preventDefault();
       } else if (e.key === '-') {
         zoomLevel = Math.max(0.5, zoomLevel - 0.1);
-        document.body.style.transform = `scale(${zoomLevel})`;
+        updateTransform();
         e.preventDefault();
       } else if (e.key === '0') {
         zoomLevel = 1;
-        document.body.style.transform = `scale(${zoomLevel})`;
+        panX = 0;
+        panY = 0;
+        updateTransform();
         e.preventDefault();
       }
     }
   });
 
-  
-  document.querySelectorAll('.island').forEach(island => {
-    island.addEventListener('click', () => {
-      const newText = prompt('Rewrite this paragraph:', island.textContent);
-      if (newText !== null) {
-        island.textContent = newText;
+  window.addEventListener('keydown', (e) => {
+    const panStep = 20;
+    if (!e.ctrlKey) {
+      switch (e.key) {
+        case 'ArrowLeft':
+          panX += panStep;
+          updateTransform();
+          e.preventDefault();
+          break;
+        case 'ArrowRight':
+          panX -= panStep;
+          updateTransform();
+          e.preventDefault();
+          break;
+        case 'ArrowUp':
+          panY += panStep;
+          updateTransform();
+          e.preventDefault();
+          break;
+        case 'ArrowDown':
+          panY -= panStep;
+          updateTransform();
+          e.preventDefault();
+          break;
       }
-    });
+    }
   });
-
 </script>
-
+</main>
+    <footer class="beach">
+        <p> My Islands</p>
+    </footer>
+</div>
 </body>
 </html>
