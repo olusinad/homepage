@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Interactive Islands</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    line-height: 1.6;
+    transition: transform 0.3s ease;
+  }
+  .island {
+    background: #f0f8ff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    border-radius: 8px;
+    user-select: none;
+  }
+  .island:hover {
+    background: #e0f0ff;
+  }
+</style>
+</head>
+<body>
+
+<div class="island" tabindex="0">No</div>
+<div class="island" tabindex="0">Man</div>
+<div class="island" tabindex="0">is</div>
+<div class="island" tabindex="0">an</div>
+<div class="island" tabindex="0">island</div>
+
+<script>
+  let zoomLevel = 1;
+
+  window.addEventListener('keydown', (e) => {
+    if (e.ctrlKey) {
+      if (e.key === '+') {
+        zoomLevel += 0.1;
+        document.body.style.transform = `scale(${zoomLevel})`;
+        e.preventDefault();
+      } else if (e.key === '-') {
+        zoomLevel = Math.max(0.5, zoomLevel - 0.1);
+        document.body.style.transform = `scale(${zoomLevel})`;
+        e.preventDefault();
+      } else if (e.key === '0') {
+        zoomLevel = 1;
+        document.body.style.transform = `scale(${zoomLevel})`;
+        e.preventDefault();
+      }
+    }
+  });
+
+  
+  document.querySelectorAll('.island').forEach(island => {
+    island.addEventListener('click', () => {
+      const newText = prompt('Rewrite this paragraph:', island.textContent);
+      if (newText !== null) {
+        island.textContent = newText;
+      }
+    });
+  });
+
+</script>
+
+</body>
+</html>
