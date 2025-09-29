@@ -1,0 +1,37 @@
+@keyframes myAnimation {
+    0% {
+        top: -20px;
+        background-color: rgb(0, 136, 255);
+    }
+    100%{
+        top: 100vh;
+        background-color: rgb(0, 18, 33);
+    }
+}
+
+.rectangles{
+    width: 20px;
+    height: 20px;
+    background-color: rgb(0, 136, 255);
+    position: relative;  
+    animation: myAnimation 4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+
+}
+body{
+    background-color: rgb(0, 136, 255);
+    margin: 0;
+    overflow: hidden;
+    height: 100vh;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    align-items: flex-start;
+   
+    position: relative;
+    overflow: hidden;
+}
