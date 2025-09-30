@@ -1,44 +1,135 @@
-body{
+body {
     background-color: powderblue;
+    margin: 0; 
+    padding: 0; 
+    font-family: myFirstFont, sans-serif; 
 }
 
-@font-face{
+@font-face {
     font-family: myFirstFont;
     src: url(AdobeClean-SemiCnIt.otf);
-  }
-
-div{
-    font-family: myFirstFont
 }
-h1{
+
+div {
+    font-family: myFirstFont;
+}
+
+h1 {
     font-size: 400%;
     text-align: center;
     font-family: myFirstFont;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); 
+    padding: 10px;
+    margin: 20px auto; 
+    max-width: fit-content; 
+    border-radius: 8px; 
+    background-color: rgba(255, 255, 255, 0.8); 
 }
-h2{
-    font-size:150%;
+
+h2 {
+    font-size: 150%;
     text-align: center;
     font-family: myFirstFont;
 }
-p{
+
+p {
     font-family: myFirstFont;
-    font-size:150%;
+    font-size: 150%;
     text-align: center;
 }
 
-a:link {
-    color: green;
+p ul {
+    list-style: none; 
+    padding: 0;
+    margin: 20px 0; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 15px; 
 }
 
+p ul li {
+    width: fit-content; 
+}
+
+
+a:link,
 a:visited {
-    color: darkgreen;
+    color: white; 
+    background-color: #4CAF50; 
+    padding: 12px 25px; 
+    text-align: center;
+    text-decoration: none; 
+    display: inline-block; 
+    border-radius: 8px; 
+    font-size: 1.2em; 
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
 }
 
 a:hover {
-    color: red;
-    text-decoration: underline;
+    color: white; 
+    background-color: #43a047; 
+    text-decoration: none; 
+    transform: translateY(-3px); 
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
 }
 
 a:active {
-    color: orange;
+    color: white; 
+    background-color: #2e7d32; 
+    transform: translateY(0); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); 
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 300%; 
+        padding: 8px;
+        margin: 15px auto;
+    }
+
+    h2 {
+        font-size: 120%; 
+    }
+
+    p {
+        font-size: 120%; 
+    }
+
+    p ul {
+        gap: 10px; 
+    }
+
+    a:link,
+    a:visited {
+        padding: 10px 20px; 
+        font-size: 1.1em; 
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 200%; 
+        padding: 5px;
+        margin: 10px auto;
+    }
+
+    h2 {
+        font-size: 100%; 
+    }
+
+    p {
+        font-size: 100%; 
+    }
+
+    p ul {
+        gap: 8px; 
+    }
+
+    a:link,
+    a:visited {
+        padding: 8px 15px; 
+        font-size: 1em; 
+    }
 }
