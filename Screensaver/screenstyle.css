@@ -13,8 +13,8 @@
     width: 20px;
     height: 20px;
     background-color: rgb(0, 136, 255);
-    position: relative;  
-    animation: myAnimation 4s;
+    position: absolute;  
+    animation: myAnimation 6s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
 
@@ -30,4 +30,5 @@ body{
     width: 100vw;
     height: 100vh;
     position: relative;
+    gap:20px;
 }
