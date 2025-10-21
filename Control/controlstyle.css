@@ -1,0 +1,96 @@
+body{
+    background-color: black;
+    color: aliceblue;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    overflow-x: hidden;
+}
+@font-face{
+        font-family: myFirstFont;
+        src: url(Neon.ttf);
+      }
+header, main{
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+h1, h2 {
+    font-family: myFirstFont;
+    font-weight: 100;
+    margin-bottom: 10px;
+}
+
+p {
+    font-family: myFirstFont;
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 0 auto 20px;
+}
+#interactive-space {
+       margin: 40px 0;
+}
+#controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;  
+}
+#clear-btn {
+    padding: 10px 20px;
+    background-color: #333;
+    color: aliceblue;
+    border: 1px solid #555;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: myFirstFont;
+    transition: background-color 0.3s ease;
+}
+#clear-btn:hover {
+    background-color: #555;
+}
+#color-picker {
+    width: 50px;
+    height: 40px;
+    border: none;
+    cursor: pointer;
+}
+label {
+    font-family: myFirstFont;
+    color: aliceblue;
+}
+
+#moving-words {
+    position: relative;  
+    display: inline-block;
+    cursor: grab;  
+    user-select: none;  
+    transition: none;  
+}
+#moving-words.dragging {
+    position: absolute;  
+    cursor: grabbing;
+    z-index: 10;  
+}
+
+canvas {
+    border: 1px solid #333; 
+    background-color: #111; 
+    cursor: crosshair; 
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); 
+}
+
+p:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    canvas {
+        width: 100%;
+        height: auto;
+    }
+}
