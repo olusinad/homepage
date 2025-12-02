@@ -1,20 +1,370 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Broken Mirror — Interactive</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Mirror Shards</title>
+  <style>
+    :root {
+      --bg: #000;
+      --accent: rgba(255, 255, 255, 0.95);
+      --overlay-bg: rgba(0, 0, 0, 0.94);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body, #app {
+      height: 100%;
+      margin: 0;
+      background: var(--bg);  /* Forces black background */
+      color: var(--accent);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    #mirror {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+      touch-action: none;
+      background: var(--bg);  /* Extra fallback */
+    }
+
+    #mirror svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+    }
+
+    .shard-group {
+      transition: transform 750ms cubic-bezier(.22, .9, .2, 1);
+      transform-origin: center;
+    }
+
+    .shard-outline {
+      stroke: none;
+      stroke-width: 0;
+      pointer-events: all;
+    }
+
+    .shard-image {
+      transition: transform 300ms cubic-bezier(.22, .9, .2, 1);
+      will-change: transform;
+    }
+
+    .overlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--overlay-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      z-index: 2000;
+      color: var(--accent);
+    }
+
+    .overlay .card {
+      max-width: 900px;
+      width: 100%;
+      background: var(--bg);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .overlay .card button {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 10px 20px;
+      margin-top: 20px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    .overlay .card button:hover {
+      opacity: 0.8;
+    }
+
+    .fallback {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: red;
+      font-size: 20px;
+      z-index: 9999;
+    }
+  </style>
+  <script src="https://d3js.org/d3.v7.min.js"></script>  <!-- D3 loaded here -->
 </head>
 <body>
   <div id="app">
-    <div id="mirror" aria-label="Interactive broken mirror"></div>
+    <div id="mirror"></div>  <!-- Container for SVG -->
   </div>
+  <script>
+    // Your fixed JS code here (copy-paste from my previous response)
+    const IMAGE_SRC = 'Final/mirror.jpg';
+    const NUM_POINTS = 50;  // Reduced for testing (increase to 650 later)
+    const EDGE_SAMPLE = 0.7;
+    const ZOOM_SCALE = 2;
 
-  <!-- D3 + Delaunay -->
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://unpkg.com/d3-delaunay@6"></script>
+    let WIDTH, HEIGHT;
+    let container, svg, defs, baseGroup, shardGroup;
+    let overlayEl = null;
 
-  <script src="script.js"></script>
+    const contents = [
+      "<h1>Shard 1</h1><p>Content.</p><button onclick='window.closeOverlay()'>Back</button>",
+      // ... (use your full array)
+    ];
+
+    function loadImageToCanvas(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';  // <-- ADD THIS LINE to enable CORS for canvas
+    img.onload = () => {
+      // ... (rest of the function remains the same)
+      const canvas = document.createElement('canvas');
+      canvas.width = WIDTH;
+      canvas.height = HEIGHT;
+      const ctx = canvas.getContext('2d');
+      // Fill black then draw image scaled to cover
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0,0,WIDTH,HEIGHT);
+      const arImg = img.width / img.height;
+      const arCanvas = WIDTH / HEIGHT;
+      let drawW, drawH, dx, dy;
+      if (arImg > arCanvas) {
+        drawH = HEIGHT;
+        drawW = arImg * drawH;
+        dx = (WIDTH - drawW) / 2;
+        dy = 0;
+      } else {
+        drawW = WIDTH;
+        drawH = drawW / arImg;
+        dx = 0;
+        dy = (HEIGHT - drawH) / 2;
+      }
+      ctx.drawImage(img, dx, dy, drawW, drawH);
+      resolve({img,canvas,ctx,dx,dy,drawW,drawH});
+    };
+    img.onerror = (e) => reject(new Error('Failed to load image: ' + src));
+    img.src = src;
+  });
+}
+
+    function computeEdgeIntensity(canvas, ctx) {
+      const w = canvas.width, h = canvas.height;
+      const src = ctx.getImageData(0, 0, w, h);
+      const dst = new Float32Array(w * h);
+      const gray = new Float32Array(w * h);
+      for (let i = 0; i < w * h; i++) {
+        const r = src.data[i * 4 + 0], g = src.data[i * 4 + 1], b = src.data[i * 4 + 2];
+        gray[i] = 0.299 * r + 0.587 * g + 0.114 * b;
+      }
+      const gx = [-1, 0, 1, -2, 0, 2, -1, 0, 1];
+      const gy = [-1, -2, -1, 0, 0, 0, 1, 2, 1];
+      for (let y = 1; y < h - 1; y++) {
+        for (let x = 1; x < w - 1; x++) {
+          let sx = 0, sy = 0, idx = 0;
+          for (let ky = -1; ky <= 1; ky++) {
+            for (let kx = -1; kx <= 1; kx++) {
+              const v = gray[(y + ky) * w + (x + kx)];
+              sx += gx[idx] * v;
+              sy += gy[idx] * v;
+              idx++;
+            }
+          }
+          dst[y * w + x] = Math.sqrt(sx * sx + sy * sy);
+        }
+      }
+      let max = 0;
+      for (let i = 0; i < dst.length; i++) if (dst[i] > max) max = dst[i];
+      if (max === 0) max = 1;
+      for (let i = 0; i < dst.length; i++) dst[i] = dst[i] / max;
+      return { intensity: dst, width: w, height: h };
+    }
+
+    function samplePoints(edgeInfo, num) {
+      const w = edgeInfo.width, h = edgeInfo.height;
+      const pts = [];
+      for (let i = 0; i < num; i++) {
+        const useEdge = Math.random() < EDGE_SAMPLE;
+        if (useEdge) {
+          let attempt = 0;
+          while (attempt < 20) {
+            const x = Math.floor(Math.random() * w);
+            const y = Math.floor(Math.random() * h);
+            const v = edgeInfo.intensity[y * w + x];
+            if (Math.random() < v * 1.2) {
+              const rx = Math.min(Math.max(0, x + (Math.random() - 0.5) * 8), w - 1);
+              const ry = Math.min(Math.max(0, y + (Math.random() - 0.5) * 8), h - 1);
+              pts.push([rx, ry]);
+              break;
+            }
+            attempt++;
+            if (attempt === 19) pts.push([Math.random() * w, Math.random() * h]);
+          }
+        } else {
+          pts.push([Math.random() * w, Math.random() * h]);
+        }
+      }
+      pts.push([0, 0], [w - 1, 0], [w - 1, h - 1], [0, h - 1]);
+      return pts;
+    }
+
+    function buildVoronoiFromPoints(points, w, h) {
+      const delaunay = d3.Delaunay.from(points);
+      const voronoi = delaunay.voronoi([0, 0, w, h]);
+      const polys = [];
+      for (let i = 0; i < points.length; i++) {
+        const cell = voronoi.cellPolygon(i);
+        if (!cell) continue;
+        polys.push({ index: i, points: cell, site: points[i] });
+      }
+      return polys;
+    }
+
+    function renderShards(polys) {
+      defs.selectAll('.shardClip').remove();
+      shardGroup.selectAll('*').remove();
+      polys.forEach((cellObj, i) => {
+        const id = 'clip-' + i;
+        const d = cellObj.points.map(p => p.join(',')).join(' ');
+        defs.append('clipPath').attr('id', id).attr('class', 'shardClip').append('polygon').attr('points', d);
+        const sg = shardGroup.append('g')
+        .attr('class', 'shard-group')
+        .attr('data-index', i);
+        sg.append('image')
+        .attr('class', 'shard-image')
+        .attr('href', IMAGE_SRC)
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', WIDTH)
+        .attr('height', HEIGHT)
+        .attr('preserveAspectRatio', 'xMidYMid slice')
+        .attr('clip-path', `url(#${id})`);
+        sg.append('polygon').attr('class', 'shard-outline').attr('points', d).style('fill', 'none').style('stroke', 'none').style('pointer-events', 'all')
+          .on('mouseenter', function() { d3.select(this).style('fill', 'rgba(255, 255, 255, 0.2)'); })
+          .on('mouseleave', function() { d3.select(this).style('fill', 'none'); })
+          .on('click', (event) => onShardClick(event, sg, cellObj));
+      });
+    }
+
+    function onShardClick(event, sg, cellObj) {
+      event.stopPropagation();
+      console.log(`Clicked shard ${cellObj.index}`);
+      const centroid = polygonCentroid(cellObj.points);
+      const cx = centroid[0], cy = centroid[1];
+      const translateX = (WIDTH / 2) - cx * ZOOM_SCALE;
+      const translateY = (HEIGHT / 2) - cy * ZOOM_SCALE;
+      shardGroup.transition().duration(750).style('transform', `translate(${translateX}px, ${translateY}px) scale(${ZOOM_SCALE})`);
+      setTimeout(() => showOverlay(cellObj), 400);
+    }
+
+    function showOverlay(cellObj) {
+      console.log('Showing overlay for shard', cellObj.index);
+      const overlay = container.append('div').attr('class', 'overlay').node();
+      overlayEl = overlay;
+      const card = d3.select(overlay).append('div').attr('class', 'card');
+      card.html(contents[cellObj.index] || `<h1>Shard ${cellObj.index + 1}</h1><p>Content not defined.</p><button onclick='window.closeOverlay()'>Back to Mirror</button>`);
+      d3.select(overlay).style('opacity', 0).transition().duration(360).style('opacity', 1);
+    }
+
+    function closeOverlay() {
+      console.log('Closing overlay');
+      removeOverlay();
+      shardGroup.transition().duration(750).style('transform', 'translate(0px,0px) scale(1)');
+    }
+
+    function removeOverlay() {
+      if (overlayEl) {
+        d3.select(overlayEl).remove();
+        overlayEl = null;
+      }
+    }
+
+    function polygonCentroid(pts) {
+      let area = 0, x = 0, y = 0;
+      for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+        const xi = pts[i][0], yi = pts[i][1];
+        const xj = pts[j][0], yj = pts[j][1];
+        const f = (xj * yi - xi * yj);
+        area += f;
+        x += (xj + xi) * f;
+        y += (yj + yi) * f;
+      }
+      area *= 0.5;
+      if (area === 0) return [pts[0][0], pts[0][1]];
+      return [x / (6 * area), y / (6 * area)];
+    }
+
+    async function init() {
+  try {
+    console.log('Init started');
+    WIDTH = window.innerWidth;
+    HEIGHT = window.innerHeight;
+    container = d3.select('#mirror');
+    if (container.empty()) {
+      console.error('ERROR: #mirror container not found!');
+      return;
+    }
+    
+    // NEW: Set the container's background to the full image for full-screen coverage
+    container.style('background-image', `url(${IMAGE_SRC})`)
+            .style('background-size', 'cover')
+            .style('background-position', 'center')
+            .style('background-repeat', 'no-repeat');
+    
+    console.log('Container found, creating SVG...');
+    svg = container.append('svg')
+    .attr('width', WIDTH)
+    .attr('height', HEIGHT)
+    .attr('preserveAspectRatio', 'xMidYMid slice');  // REMOVED: .style('background', '#000')
+    defs = svg.append('defs');
+    baseGroup = svg.append('g').attr('class', 'base');
+    shardGroup = svg.append('g').attr('class', 'shards');
+    
+    // REMOVED: baseGroup.append('image')... — replaced by background
+    
+    // Sample random points (from previous fix)
+    console.log('Sampling random points...');
+    const points = [];
+    for (let i = 0; i < NUM_POINTS; i++) {
+      points.push([Math.random() * WIDTH, Math.random() * HEIGHT]);
+    }
+    points.push([0, 0], [WIDTH - 1, 0], [WIDTH - 1, HEIGHT - 1], [0, HEIGHT - 1]);  // Corners for coverage
+    console.log('Points sampled:', points.length);
+    
+    const polys = buildVoronoiFromPoints(points, WIDTH, HEIGHT);
+    console.log('Voronoi built, rendering shards...');
+    renderShards(polys);
+    
+    shardGroup.selectAll('.shard-group').style('opacity', 0).transition().delay((d, i) => i * 3).duration(700).style('opacity', 1);
+    window.addEventListener('resize', () => location.reload());
+    console.log('Init complete');
+  } catch (err) {
+    console.error('Mirror init error:', err);
+    const msg = document.createElement('div');
+    msg.className = 'fallback';
+    msg.innerText = 'Error loading mirror — check console.';
+    document.body.appendChild(msg);
+  }
+}
+   
+
+    window.closeOverlay = closeOverlay;  // Attach to window
+    init();
+  </script>
 </body>
 </html>
