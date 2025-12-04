@@ -17,7 +17,7 @@
     html, body, #app {
       height: 100%;
       margin: 0;
-      background: var(--bg);  /* Forces black background */
+      background: var(--bg);  
       color: var(--accent);
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       -webkit-font-smoothing: antialiased;
@@ -30,7 +30,7 @@
       position: relative;
       overflow: hidden;
       touch-action: none;
-      background: var(--bg);  /* Extra fallback */
+      background: var(--bg);  
     }
 
     #mirror svg {
@@ -106,16 +106,15 @@
       z-index: 9999;
     }
   </style>
-  <script src="https://d3js.org/d3.v7.min.js"></script>  <!-- D3 loaded here -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>  
 </head>
 <body>
   <div id="app">
-    <div id="mirror"></div>  <!-- Container for SVG -->
+    <div id="mirror"></div>  
   </div>
   <script>
-    // Your fixed JS code here (copy-paste from my previous response)
-    const IMAGE_SRC = 'Final/mirror.jpg';
-    const NUM_POINTS = 50;  // Reduced for testing (increase to 650 later)
+    const IMAGE_SRC = 'mirror.jpg';
+    const NUM_POINTS = 50;  
     const EDGE_SAMPLE = 0.7;
     const ZOOM_SCALE = 2;
 
@@ -124,21 +123,64 @@
     let overlayEl = null;
 
     const contents = [
-      "<h1>Shard 1</h1><p>Content.</p><button onclick='window.closeOverlay()'>Back</button>",
-      // ... (use your full array)
+    "<h1>What are broken pieces really worth?</h1><p>This shard represents reflection and value. In a broken mirror, each piece holds a distorted view of reality.</p><button onclick='window.closeOverlay()'>Back</button>",
+  
+    "<h1>Shard of Memory</h1><p>This piece reminds me of old times. I was happy with my broken pieces</p><img src='passion_Site/rockbridge.jpeg' alt='A photo from the past' style='max-width: 100%;'><br><button onclick='window.closeOverlay()'>Close</button>",
+ 
+    "<h1>Hidden Truth</h1><p>Behind every crack is a story untold. Just because you have broken pieces does not mean you won't become something amazing!</p><button onclick='window.closeOverlay()'>Return</button>",
+  
+   "<h1>Curious Shard</h1><p>What was your favorite part of today?</p><button onclick='window.closeOverlay()'>Back to Mirror</button>",
+  
+    "<h1>Simple Message</h1><p>You are worth so much more than you could ever know.</p><button onclick='window.closeOverlay()'>OK</button>",
+
+    "<h1>Look Deeper</h1><p>Take a look at those around you, I'm sure there are a lot more broken pieces than you realize.</p><button onclick='window.closeOverlay()'>Back</button>",
+  
+    "<h1>Insight</h1><p>No one has made it through life without a couple of broken pieces</p><button onclick='window.closeOverlay()'>Close</button>",
+ 
+    "<h1>Hidden Truth</h1><p>You are beautiful and a few scars is never going to change that!</p>><button onclick='window.closeOverlay()'>Return</button>",
+  
+   "<h1>Curious Shard</h1><p>What is something you are looking forward to?</p><button onclick='window.closeOverlay()'>Back to Mirror</button>",
+  
+    "<h1>Simple Message</h1><p>I promise that you are going to make it!</p><button onclick='window.closeOverlay()'>OK</button>",
+
+    "<h1>Hey</h1><p>I am proud of you for persevering!</p><button onclick='window.closeOverlay()'>Back</button>",
+  
+    "<h1>Shardy</h1><p>Whazzah Dude!</p><button onclick='window.closeOverlay()'>Close</button>",
+ 
+    "<h1>Hidden Truth</h1><p>This too shall pass! I promise!</p><button onclick='window.closeOverlay()'>Return</button>",
+  
+   "<h1>Curious Shard</h1><p>Who made you laugh today?</p><button onclick='window.closeOverlay()'>Back to Mirror</button>",
+  
+    "<h1>Simple Message</h1><p>You are doing absolutely amazing! Don't give up!</p><button onclick='window.closeOverlay()'>OK</button>",
+
     ];
+
+    function generateRandomContent(index) {
+      const fonts = ['Arial', 'Times New Roman', 'Courier New', 'Georgia', 'Verdana', 'Comic Sans MS', 'Impact'];
+      const randomFont = fonts[Math.floor(Math.random() * fonts.length)];
+      const randomHue = Math.floor(Math.random() * 360);  
+      const randomSaturation = 70 + Math.floor(Math.random() * 30);  
+      const randomLightness = 40 + Math.floor(Math.random() * 20);  
+      const randomColor = `hsl(${randomHue}, ${randomSaturation}%, ${randomLightness}%)`;
+      const randomBgColor = `hsl(${(randomHue + 180) % 360}, ${randomSaturation}%, ${randomLightness + 10}%)`; 
+      return `
+        <div style="background-color: ${randomBgColor}; color: ${randomColor}; padding: 20px; border-radius: 8px;">
+          <h1 style="font-family: ${randomFont};">Shard ${index + 1}</h1>
+          <p style="font-family: ${randomFont};">A random pop of color! Wouldn't you like to know what comes next?</p>
+          <button onclick='window.closeOverlay()' style="background-color: ${randomColor}; color: ${randomBgColor};">Back</button>
+        </div>
+      `;
+    }
 
     function loadImageToCanvas(src) {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = 'anonymous';  // <-- ADD THIS LINE to enable CORS for canvas
+    img.crossOrigin = 'anonymous';  
     img.onload = () => {
-      // ... (rest of the function remains the same)
       const canvas = document.createElement('canvas');
       canvas.width = WIDTH;
       canvas.height = HEIGHT;
       const ctx = canvas.getContext('2d');
-      // Fill black then draw image scaled to cover
       ctx.fillStyle = 'black';
       ctx.fillRect(0,0,WIDTH,HEIGHT);
       const arImg = img.width / img.height;
@@ -277,8 +319,13 @@
       const overlay = container.append('div').attr('class', 'overlay').node();
       overlayEl = overlay;
       const card = d3.select(overlay).append('div').attr('class', 'card');
-      card.html(contents[cellObj.index] || `<h1>Shard ${cellObj.index + 1}</h1><p>Content not defined.</p><button onclick='window.closeOverlay()'>Back to Mirror</button>`);
-      d3.select(overlay).style('opacity', 0).transition().duration(360).style('opacity', 1);
+
+      if(cellObj.index<15){
+        card.html(contents[cellObj.index]);
+      }
+    else{
+        card.html(generateRandomContent(cellObj.index));
+    }      d3.select(overlay).style('opacity', 0).transition().duration(360).style('opacity', 1);
     }
 
     function closeOverlay() {
@@ -320,7 +367,6 @@
       return;
     }
     
-    // NEW: Set the container's background to the full image for full-screen coverage
     container.style('background-image', `url(${IMAGE_SRC})`)
             .style('background-size', 'cover')
             .style('background-position', 'center')
@@ -330,20 +376,18 @@
     svg = container.append('svg')
     .attr('width', WIDTH)
     .attr('height', HEIGHT)
-    .attr('preserveAspectRatio', 'xMidYMid slice');  // REMOVED: .style('background', '#000')
+    .attr('preserveAspectRatio', 'xMidYMid slice');  
     defs = svg.append('defs');
     baseGroup = svg.append('g').attr('class', 'base');
     shardGroup = svg.append('g').attr('class', 'shards');
     
-    // REMOVED: baseGroup.append('image')... — replaced by background
     
-    // Sample random points (from previous fix)
     console.log('Sampling random points...');
     const points = [];
     for (let i = 0; i < NUM_POINTS; i++) {
       points.push([Math.random() * WIDTH, Math.random() * HEIGHT]);
     }
-    points.push([0, 0], [WIDTH - 1, 0], [WIDTH - 1, HEIGHT - 1], [0, HEIGHT - 1]);  // Corners for coverage
+    points.push([0, 0], [WIDTH - 1, 0], [WIDTH - 1, HEIGHT - 1], [0, HEIGHT - 1]);  
     console.log('Points sampled:', points.length);
     
     const polys = buildVoronoiFromPoints(points, WIDTH, HEIGHT);
@@ -363,7 +407,7 @@
 }
    
 
-    window.closeOverlay = closeOverlay;  // Attach to window
+    window.closeOverlay = closeOverlay;  
     init();
   </script>
 </body>
